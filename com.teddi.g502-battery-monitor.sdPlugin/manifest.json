@@ -4,16 +4,16 @@
 	"Author": "Teddi",
 	"Actions": [
 		{
-			"Name": "Counter",
+			"Name": "G502 Battery Monitor",
 			"UUID": "com.teddi.g502-battery-monitor.increment",
-			"Icon": "imgs/actions/counter/icon",
-			"Tooltip": "Displays a count, which increments by one on press.",
+			"Icon": "imgs/actions/app/icon",
+			"Tooltip": "",
 			"Controllers": [
 				"Keypad"
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/counter/key",
+					"Image": "imgs/actions/app/key",
 					"TitleAlignment": "middle"
 				}
 			]
