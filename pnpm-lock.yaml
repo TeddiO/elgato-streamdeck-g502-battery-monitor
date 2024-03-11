@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@elgato/streamdeck':
-    specifier: ^0.2.0
-    version: 0.2.0
+    specifier: ^0.3.0
+    version: 0.3.0
   ws:
     specifier: ^8.16.0
     version: 8.16.0
@@ -55,8 +55,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@elgato/streamdeck@0.2.0:
-    resolution: {integrity: sha512-Rt9b3Y132xjYeUM/w0pLBNmxrUaeHq8dmjFdW1ujODyzDu3Cd3T3clkj02em1K2vhUoVqmwu7rbVKUTfcz6ijA==}
+  /@elgato/streamdeck@0.3.0:
+    resolution: {integrity: sha512-vdcFahvcpsffIu3b+vKtJshnWTUVXzURujmb/A5b00PKuXzgeuoinO7wcGgjsi2DBq9ciqV/0mKFU/FHiWXKtQ==}
     engines: {node: ^20.5.1}
     dependencies:
       ws: 8.16.0
@@ -385,8 +385,8 @@ packages:
       once: 1.4.0
     dev: true
 
-  /hasown@2.0.1:
-    resolution: {integrity: sha512-1/th4MHjnwncwXsIW6QMzlvYL9kG5e/CpVvLRZe4XPa8TOUNbCELqmvhDmnkNsAjwaG4+I8gJJL0JBvTTLO9qA==}
+  /hasown@2.0.2:
+    resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
     dependencies:
       function-bind: 1.1.2
@@ -413,7 +413,7 @@ packages:
   /is-core-module@2.13.1:
     resolution: {integrity: sha512-hHrIjvZsftOsvKSn2TRYl63zvxsgE0K+0mYMoH6gD4omR5IWB2KynivBQczo3+wF1cCkjzvptnI9Q0sPU66ilw==}
     dependencies:
-      hasown: 2.0.1
+      hasown: 2.0.2
     dev: true
 
   /is-module@1.0.0:
