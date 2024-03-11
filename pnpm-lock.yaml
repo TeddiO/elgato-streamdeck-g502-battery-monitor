@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@elgato/streamdeck':
-    specifier: ^0.2.0
-    version: 0.2.0
+    specifier: ^0.3.0
+    version: 0.3.0
   ws:
     specifier: ^8.16.0
     version: 8.16.0
@@ -55,8 +55,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@elgato/streamdeck@0.2.0:
-    resolution: {integrity: sha512-Rt9b3Y132xjYeUM/w0pLBNmxrUaeHq8dmjFdW1ujODyzDu3Cd3T3clkj02em1K2vhUoVqmwu7rbVKUTfcz6ijA==}
+  /@elgato/streamdeck@0.3.0:
+    resolution: {integrity: sha512-vdcFahvcpsffIu3b+vKtJshnWTUVXzURujmb/A5b00PKuXzgeuoinO7wcGgjsi2DBq9ciqV/0mKFU/FHiWXKtQ==}
     engines: {node: ^20.5.1}
     dependencies:
       ws: 8.16.0
