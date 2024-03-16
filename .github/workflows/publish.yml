@@ -1,9 +1,9 @@
-# name: Build & Publish
+name: Build & Publish
 
 on:
-#   push:
-#     branches:
-#       - main
+  push:
+    branches:
+      - main
 
 jobs:
   build-app:
@@ -54,3 +54,5 @@ jobs:
           body: "Release ${{ env.VERSION }}"
           draft: false
           prerelease: false
+          make_latest: true
+          generate_release_notes: true
