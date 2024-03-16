@@ -10,13 +10,15 @@ const logLevels: { [key: string]: LogLevel } = {
 	'trace': LogLevel.TRACE
 };
 
-const logLevel = process.env.BATTERY_MONITOR_LOGLEVEL ? logLevels[process.env.BATTERY_MONITOR_LOGLEVEL.toLowerCase()] : LogLevel.ERROR;
 const logger = streamDeck.logger.createScope("Websocket Log");
+const logLevel = process.env.BATTERY_MONITOR_LOGLEVEL ? logLevels[process.env.BATTERY_MONITOR_LOGLEVEL.toLowerCase()] : LogLevel.ERROR;
 logger.setLevel(logLevel);
 
-let regex = /g502/g;
+
+let regex = /g502/;
 let deviceID: string = "";
 let ws: WebSocket;
+let screenEvent: WillAppearEvent<any>;
 let curBattery: number = 0;
 let initialized: boolean = false;
 
@@ -40,7 +42,6 @@ function SubscribeToBatteryLevel() {
 	);
 }
 
-const states: { [key: string]: string } = { "charging": "⚡", "fullyCharged": "🔋" };
 function HandleChargeString(dataMap: any) {
 	
 	if (dataMap.payload.fullyCharged) {
@@ -54,88 +55,126 @@ function HandleChargeString(dataMap: any) {
 	return `${curBattery}%`;
 }
 
-@action({ UUID: "com.teddi.g502-battery-monitor.increment" })
-export class PowerMonitor extends SingletonAction {
-	
-	onWillAppear(ev: WillAppearEvent<any>): void | Promise<void> {
-		ws = new WebSocket('ws://localhost:9010', "json");
+function AttemptRetry(retryTime: number = 5000) {
+	logger.debug(`Attempting retry in ${retryTime / 1000} seconds`);
+	let timeoutAttempt = setTimeout(() => {
+		logger.debug("Attempting to close WebSocket connection and re-init...");
+		ws.close();
+		logger.debug("WebSocket connection closed");
+		ws = CreateWebsocket();
+		logger.debug("WebSocket initializing...");
+	}, retryTime);
+}
 
-		setTimeout(() => {
-			if (!initialized) {
-				ws.close();
-				logger.debug("Attempting to close WebSocket connection and re-init...");
-				this.onWillAppear(ev);
-				return;
-			}
-		}, 5000);
+function OpenWebSocket() {
+	logger.debug("Connected to G-HUB WebSocket");
 
-		ws.on('open', function open() {
-			logger.debug("Connected to G-HUB WebSocket");
+	// Lets snag the device ID first
+	ws.send(JSON.stringify(
+		{
+			"msgid": "",
+			"verb": "GET",
+			"path": "/devices/list" 
+		})
+	);
+	logger.debug("Sent request for /devices/list");
+}
 
-			// Lets snag the device ID first
-			ws.send(JSON.stringify(
-				{
-					"msgid": "",
-					"verb": "GET",
-					"path": "/devices/list" 
-				})
-			);
-			logger.debug("Sent request for /devices/list");
-		});
+function OnWebsocketMessage(data: WebSocket.Data) {
+	logger.debug(`Received message from G-HUB`);
+	let dataMap = JSON.parse(data.toString());
 
-		ws.on('message', function message(data) {
-			logger.debug(`Received message from G-HUB`);
-			let dataMap = JSON.parse(data.toString());
-	
-			if (dataMap.path === "/devices/list") {
-				logger.debug("Received /devices/list");
-				for (let device of dataMap.payload.deviceInfos) {
-					if (regex.test(device.deviceModel)) {
-						deviceID = device.id;
-						logger.debug(`Device ID: ${deviceID}`);
-						GetBatteryLevel(deviceID)
-						initialized = true;
-						return;
-					}
-				}
-			}
-
-			if (dataMap.path === `/battery/${deviceID}/state`) {
-				logger.debug(`Received /battery/${deviceID}/state`);
-				curBattery = dataMap.payload.percentage;
-				SubscribeToBatteryLevel();
-				ev.action.setTitle(HandleChargeString(dataMap));
-				return;
-			}
-
-			if (dataMap.path === "/battery/state/changed") {
-				logger.debug(`Received /battery/state/changed`);
-				if (dataMap.payload.deviceId === deviceID) {
-					curBattery = dataMap.payload.percentage;
-					ev.action.setTitle(HandleChargeString(dataMap));
-
-					if (curBattery <= 20) {
-						ev.action.showAlert()
-					}
-				}
-			}
+	if (dataMap.path === "/devices/list") {
+		logger.debug("Received /devices/list");
+		if (dataMap.payload.deviceInfos.length === 0) {
+			logger.error("No devices found, retrying in 10 seconds...");
+			AttemptRetry(10000);
 			return;
-		});
-		
+		}
 
-		ws.on('error', function error(err) {
-			logger.error(`WebSocket error: ${err}`);
-		});
+		for (let device of dataMap.payload.deviceInfos) {
+			let regexTest = regex.test(device.deviceModel);
+			if (regexTest) {
+				logger.debug(`Valid device: ${device}`);
+				deviceID = device.id;
+				logger.debug(`Device ID: ${deviceID}`);
+				GetBatteryLevel(deviceID)
+				initialized = true;
+				return;
+			}
+		}
 
-		
-		return ev.action.setTitle("...%");
+		// Edge case if a device isn't plugged in yet or G-HUB is having a moment
+		if (!initialized) {
+			logger.error("No G502 devices found, retrying in 10 seconds...");
+			AttemptRetry(10000);
+			return;
+		}
 	}
 
-	onWillDisappear(ev: WillDisappearEvent<any>): void | Promise<void> {
-		logger.debug("Closing WebSocket connection");
+	if (dataMap.path === `/battery/${deviceID}/state`) {
+		logger.debug(`Received /battery/${deviceID}/state`);
+		if (!dataMap.payload || !dataMap.payload.percentage) {
+			AttemptRetry(10000);
+			return;
+		}
+
+		logger.debug(`Battery: ${dataMap.payload.percentage}%`);
+		curBattery = dataMap.payload.percentage;
+		SubscribeToBatteryLevel();
+		screenEvent.action.setTitle(HandleChargeString(dataMap));
+		return;
+	}
+
+	if (dataMap.path === "/battery/state/changed") {
+		logger.debug(`Received /battery/state/changed`);
+		if (dataMap.payload.deviceId === deviceID) {
+			curBattery = dataMap.payload.percentage;
+			screenEvent.action.setTitle(HandleChargeString(dataMap));
+
+			if (curBattery <= 20) {
+				screenEvent.action.showAlert()
+			}
+		}
+	}
+	return;
+}
+
+function OnWebsocketError(err: Error) {
+	logger.error(`WebSocket error: ${err}`);
+}
+
+function OnWebsocketClose() {
+	logger.debug("WebSocket connection closed");
+	if (!initialized) {
+		AttemptRetry();
+	}
+}
+
+function CreateWebsocket() {
+	ws = new WebSocket('ws://localhost:9010', "json");
+
+	ws.on('open', OpenWebSocket);
+	ws.on('message', OnWebsocketMessage);
+	ws.on('error', OnWebsocketError);
+	ws.on('close', OnWebsocketClose);
+	return ws;
+}
+
+@action({ UUID: "com.teddi.g502-battery-monitor.increment" })
+export class PowerMonitor extends SingletonAction {
+	onWillAppear(ev: WillAppearEvent<any>): void | Promise<void> {
+		logger.debug("WebSocket initializing...");
+		ws = CreateWebsocket()
+		screenEvent = ev;
+		
+		return ev.action.setTitle("🕒...%");
+	}
+
+	onWillDisappear(screenEvent: WillDisappearEvent<any>): void | Promise<void> {
+		logger.debug("Changing page: Closing WebSocket connection");
 		ws.close();
-		initialized = false;
-		logger.debug("WebSocket connection closed");
+		logger.debug("Changing page: WebSocket connection closed");
 	}
 }
 
