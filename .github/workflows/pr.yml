@@ -1,0 +1,33 @@
+name: Build (PR)
+
+on:
+  pull_request:
+
+jobs:
+  build-app:
+    permissions:
+      contents: read
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "Check release doesn't exist"
+        run: |
+          VERSION=$(jq -r '.version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+          RESPONSE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
+
+          if [ "$RESPONSE" != "Not Found" ]; then
+            echo "Release v$VERSION already exists, please update the version in manifest.json"
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: true
+
+      - name: Build App
+        run: |
+          pnpm build
