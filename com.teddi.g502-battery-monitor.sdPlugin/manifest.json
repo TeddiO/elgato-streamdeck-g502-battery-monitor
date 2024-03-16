@@ -1,11 +1,11 @@
 {
 	"Name": "G502 Battery Monitor",
-	"Version": "0.1.0",
+	"Version": "1.0.0",
 	"Author": "Teddi",
 	"Actions": [
 		{
 			"Name": "G502 Battery Monitor",
-			"UUID": "com.teddi.g502-battery-monitor.increment",
+			"UUID": "com.teddi.g502-battery-monitor.monitor",
 			"Icon": "imgs/actions/app/icon",
 			"Tooltip": "",
 			"Controllers": [
@@ -13,8 +13,10 @@
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/app/key",
-					"TitleAlignment": "middle"
+					"Image": "imgs/actions/app/mouse-image",
+					"TitleAlignment": "middle",
+					"TitleColor": "#54f859",
+					"FontSize": 16
 				}
 			]
 		}

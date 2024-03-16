@@ -1,0 +1,58 @@
+name: Build & Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-app:
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "Check release doesn't exist"
+        run: |
+          VERSION=$(jq -r '.Version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+          RESPONSE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
+          MESSAGE=$(echo $RESPONSE | jq -r '.message')
+
+          if [ "$MESSAGE" != "Not Found" ]; then
+              echo "Release v$VERSION already exists, please update the version in manifest.json"
+              exit 1
+          fi
+
+          echo "VERSION=v$VERSION" >> $GITHUB_ENV
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: true
+
+      - name: Build App
+        run: |
+          pnpm build
+
+      # Zip up the build artifact
+      - name: "Zip up the build artifact"
+        run: |
+          zip -r com.teddi.g502-battery-monitor.sdPlugin.zip com.teddi.g502-battery-monitor.sdPlugin
+
+        # Testing for the publish step
+      - name: "Publish to GitHub"
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            com.teddi.g502-battery-monitor.sdPlugin.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          body: "Release ${{ env.VERSION }}"
+          draft: false
+          prerelease: false
+          make_latest: true
+          generate_release_notes: true
