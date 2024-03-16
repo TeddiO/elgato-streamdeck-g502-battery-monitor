@@ -15,7 +15,9 @@ jobs:
 
       - name: "Check release doesn't exist"
         run: |
-          VERSION=$(jq -r '.version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+          VERSION=$(jq -r '.Version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+          echo $VERSION;
+
           RESPONSE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
 
           MESSAGE=$(echo $RESPONSE | jq -r '.message')
