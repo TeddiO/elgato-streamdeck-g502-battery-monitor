@@ -32,3 +32,20 @@ jobs:
       - name: Build App
         run: |
           pnpm build
+
+      # Zip up the build artifact
+      - name: "Zip up the build artifact"
+        run: |
+          zip -r com.teddi.g502-battery-monitor.sdPlugin.zip com.teddi.g502-battery-monitor.sdPlugin
+
+        # Testing for the publish step
+      - name: "Publish to GitHub"
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            com.teddi.g502-battery-monitor.sdPlugin.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: "v${{ steps.version.outputs.version }}"
+          body: "Release v${{ steps.version.outputs.version }}"
+          draft: false
+          prerelease: false
