@@ -24,7 +24,7 @@ jobs:
             exit 1
           fi
 
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=v$VERSION" >> $GITHUB_ENV
 
       - uses: pnpm/action-setup@v3
         with:
@@ -42,13 +42,13 @@ jobs:
 
         # Testing for the publish step
       - name: "Publish to GitHub"
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             com.teddi.g502-battery-monitor.sdPlugin.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: "v$VERSION"
-          tag_name: "v$VERSION"
-          body: "Release v$VERSION"
+          name: ${{env.VERSION}}
+          tag_name: ${{env.VERSION}}
+          body: "Release ${{env.VERSION}}"
           draft: false
           prerelease: false
