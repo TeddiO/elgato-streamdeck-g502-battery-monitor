@@ -18,6 +18,8 @@ jobs:
           VERSION=$(jq -r '.version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
           RESPONSE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
 
+          echo $RESPONSE;
+
           if [ "$RESPONSE" != "null" ]; then
             echo "Release v$VERSION already exists, please update the version in manifest.json"
             exit 1
