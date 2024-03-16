@@ -24,7 +24,7 @@ jobs:
 
           echo $MESSAGE;
 
-          if [ "$MESSAGE" == "Not Found" ]; then
+          if [ "$MESSAGE" != "Not Found" ]; then
             echo "Release v$VERSION already exists, please update the version in manifest.json"
             exit 1
           fi
