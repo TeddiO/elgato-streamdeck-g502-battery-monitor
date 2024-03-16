@@ -6,7 +6,7 @@ on:
 jobs:
   build-app:
     permissions:
-      contents: read
+      contents: write
 
     runs-on: ubuntu-latest
     steps:
@@ -47,8 +47,8 @@ jobs:
           files: |
             com.teddi.g502-battery-monitor.sdPlugin.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: ${{env.VERSION}}
-          tag_name: ${{env.VERSION}}
-          body: "Release ${{env.VERSION}}"
+          name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          body: "Release ${{ env.VERSION }}"
           draft: false
           prerelease: false
