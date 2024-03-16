@@ -47,8 +47,8 @@ jobs:
           files: |
             com.teddi.g502-battery-monitor.sdPlugin.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: "v${{ env.version }}"
-          tag_name: "v${{ env.version }}"
-          body: "Release v${{ env.version }}"
+          name: "v$VERSION"
+          tag_name: "v$VERSION"
+          body: "Release v$VERSION"
           draft: false
           prerelease: false
