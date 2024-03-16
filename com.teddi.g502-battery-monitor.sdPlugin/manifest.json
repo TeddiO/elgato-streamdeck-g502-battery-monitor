@@ -13,8 +13,10 @@
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/app/mouse-image4",
-					"TitleAlignment": "middle"
+					"Image": "imgs/actions/app/mouse-image",
+					"TitleAlignment": "middle",
+					"TitleColor": "#54f859",
+					"FontSize": 16
 				}
 			]
 		}
