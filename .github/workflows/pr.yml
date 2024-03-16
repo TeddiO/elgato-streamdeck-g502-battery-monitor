@@ -24,6 +24,8 @@ jobs:
             exit 1
           fi
 
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - uses: pnpm/action-setup@v3
         with:
           version: 8
