@@ -22,6 +22,8 @@ jobs:
 
           MESSAGE=$(echo $RESPONSE | jq -r '.message')
 
+          echo $MESSAGE;
+
           if [ "$MESSAGE" == "Not Found" ]; then
             echo "Release v$VERSION already exists, please update the version in manifest.json"
             exit 1
