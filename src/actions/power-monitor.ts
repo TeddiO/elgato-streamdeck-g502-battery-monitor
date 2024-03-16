@@ -161,7 +161,7 @@ function CreateWebsocket() {
 	return ws;
 }
 
-@action({ UUID: "com.teddi.g502-battery-monitor.increment" })
+@action({ UUID: "com.teddi.g502-battery-monitor.monitor" })
 export class PowerMonitor extends SingletonAction {
 	onWillAppear(ev: WillAppearEvent<any>): void | Promise<void> {
 		logger.debug("WebSocket initializing...");
