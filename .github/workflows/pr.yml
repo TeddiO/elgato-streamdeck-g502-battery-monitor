@@ -20,7 +20,9 @@ jobs:
 
           echo $RESPONSE;
 
-          if [ "$RESPONSE" != "null" ]; then
+          MESSAGE=$(echo $RESPONSE | jq -r '.message')
+
+          if [ "$MESSAGE" == "Not Found" ]; then
             echo "Release v$VERSION already exists, please update the version in manifest.json"
             exit 1
           fi
