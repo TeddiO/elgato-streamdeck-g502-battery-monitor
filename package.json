@@ -11,9 +11,9 @@
 		"@rollup/plugin-terser": "^0.4.4",
 		"@rollup/plugin-typescript": "^11.1.6",
 		"@tsconfig/node20": "^20.1.2",
-		"@types/node": "20.11.25",
+		"@types/node": "20.11.29",
 		"@types/ws": "^8.5.10",
-		"rollup": "^4.12.1",
+		"rollup": "^4.13.0",
 		"tslib": "^2.6.2",
 		"typescript": "^5.4.2"
 	},
