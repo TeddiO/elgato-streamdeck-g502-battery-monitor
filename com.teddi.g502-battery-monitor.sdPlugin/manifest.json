@@ -1,12 +1,12 @@
 {
 	"Name": "G502 Battery Monitor",
-	"Version": "1.1.0",
+	"Version": "1.1.0.0",
 	"Author": "Teddi",
 	"Actions": [
 		{
 			"Name": "G502 Battery Monitor",
 			"UUID": "com.teddi.g502-battery-monitor.monitor",
-			"Icon": "imgs/actions/app/icon",
+			"Icon": "imgs/actions/app/mouse-image",
 			"Tooltip": "",
 			"Controllers": [
 				"Keypad"
