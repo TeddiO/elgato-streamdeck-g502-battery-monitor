@@ -12,11 +12,31 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 2
 
       - name: "Check release doesn't exist"
         if: ${{ !contains(github.event.pull_request.labels.*.name , 'version-bypass')}}
         run: |
           VERSION=$(jq -r '.Version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+
+          # Check if package.json is among the changed files
+          if git diff --name-only HEAD~1 HEAD | grep -q 'package.json'; then
+              # Extract the devDependencies section from both the current and previous version
+              PREV_DEV_DEP=$(git show HEAD~1:package.json | jq -S '.devDependencies')
+              CURR_DEV_DEP=$(jq -S '.devDependencies' package.json)
+
+              # Extract the rest of the package.json sections for comparison
+              PREV_OTHER=$(git show HEAD~1:package.json | jq -S 'del(.devDependencies)')
+              CURR_OTHER=$(jq -S 'del(.devDependencies)' package.json)
+
+              # Check if only the devDependencies section has changed
+              if [ "$PREV_DEV_DEP" = "$CURR_DEV_DEP" ] && [ "$PREV_OTHER" = "$CURR_OTHER" ]; then
+                  echo "Only devDependencies updated. Skipping release check."
+                  exit 0
+              fi
+          fi
+
           RESPONSE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
           MESSAGE=$(echo $RESPONSE | jq -r '.message')
 
