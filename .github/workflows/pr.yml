@@ -15,11 +15,21 @@ jobs:
         with:
             fetch-depth: 2
 
-      - name: "Check release doesn't exist"
-        if: ${{ !contains(github.event.pull_request.labels.*.name , 'version-bypass')}}
+      - name: "Check if 'version-bypass' label is present"
+        id: check-label
         run: |
-          VERSION=$(jq -r '.Version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+          LABELS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels")
+          echo "LABELS: $LABELS"
+          if echo "$LABELS" | jq -r '.[].name' | grep -q '^version-bypass$'; then
+            echo "bypass=true" >> $GITHUB_ENV
+          else
+            echo "bypass=false" >> $GITHUB_ENV
+          fi
 
+      - name: "Check release doesn't exist"
+        if: env.bypass != 'true'
+        run: |
           # Check if package.json is among the changed files
           if git diff --name-only HEAD~1 HEAD | grep -q 'package.json'; then
               # Extract the devDependencies section from both the current and previous version
@@ -37,13 +47,19 @@ jobs:
               fi
           fi
 
+          # Extract the version from manifest.json
+          VERSION=$(jq -r '.Version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+
+          # Check if the release already exists
           RESPONSE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
           MESSAGE=$(echo $RESPONSE | jq -r '.message')
 
           if [ "$MESSAGE" != "Not Found" ]; then
-            echo "Release v$VERSION already exists, please update the version in manifest.json"
-            exit 1
+              echo "Release v$VERSION already exists, please update the version in manifest.json"
+              exit 1
           fi
+
+          echo "VERSION=v$VERSION" >> $GITHUB_ENV
 
       - uses: pnpm/action-setup@v4
         with:
