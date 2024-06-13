@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+            fetch-depth: 2
 
       - name: "Check release doesn't exist"
         if: ${{ !contains(github.event.pull_request.labels.*.name , 'version-bypass')}}
