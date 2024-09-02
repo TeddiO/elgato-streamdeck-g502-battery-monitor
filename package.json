@@ -5,17 +5,17 @@
 	},
 	"type": "module",
 	"devDependencies": {
-		"@elgato/cli": "^0.3.1",
+		"@elgato/cli": "^0.3.2",
 		"@rollup/plugin-commonjs": "^26.0.1",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-terser": "^0.4.4",
 		"@rollup/plugin-typescript": "^11.1.6",
 		"@tsconfig/node20": "^20.1.4",
-		"@types/node": "20.14.10",
-		"@types/ws": "^8.5.11",
-		"rollup": "^4.18.1",
-		"tslib": "^2.6.3",
-		"typescript": "^5.5.3"
+		"@types/node": "22.5.2",
+		"@types/ws": "^8.5.12",
+		"rollup": "^4.21.2",
+		"tslib": "^2.7.0",
+		"typescript": "^5.5.4"
 	},
 	"dependencies": {
 		"@elgato/streamdeck": "^0.3.0",
