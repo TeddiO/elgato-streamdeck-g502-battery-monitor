@@ -1,6 +1,6 @@
 {
 	"Name": "G502 Battery Monitor",
-	"Version": "1.2.2.0",
+	"Version": "__VERSION__",
 	"Author": "Teddi",
 	"Actions": [
 		{
