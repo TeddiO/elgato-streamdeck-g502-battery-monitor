@@ -35,24 +35,24 @@ jobs:
       - if: env.TYPE
         id: calc
         run: |
-          CUR=$(jq -r .version package.json)
-          IFS='.' read -r MAJ MIN PAT REV <<< "$CUR"
+          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/latest")
+          LATEST_TAG=$(echo "$RESPONSE" | jq -r .tag_name)
+          CURRENT=${LATEST_TAG#v}
+          IFS='.' read -r MAJ MIN PAT REV <<< "$CURRENT"
           case "$TYPE" in
-          major)
-            MAJ=$((MAJ+1)); MIN=0; PAT=0; REV=0 ;;
-          minor)
-            MIN=$((MIN+1)); PAT=0; REV=0 ;;
-          patch)
-            PAT=$((PAT+1)); REV=0 ;;
-          revision)
-            REV=$((REV+1)) ;;
+          major) MAJ=$((MAJ+1)); MIN=0; PAT=0; REV=0 ;;
+          minor) MIN=$((MIN+1)); PAT=0; REV=0 ;;
+          patch) PAT=$((PAT+1)); REV=0 ;;
+          revision) REV=$((REV+1)) ;;
           esac
           NEW="$MAJ.$MIN.$PAT.$REV"
-          echo "CURRENT=$CUR" >> $GITHUB_ENV
-          echo "NEW=$NEW" >> $GITHUB_ENV
-          echo "Current version: $CUR"
+          echo "Fetched latest release: $LATEST_TAG"
+          echo "Current version: $CURRENT"
           echo "Proposed new version: $NEW"
-
+          echo "CURRENT=$CURRENT" >> $GITHUB_ENV
+          echo "NEW=$NEW" >> $GITHUB_ENV
+  
       - if: env.TYPE
         uses: actions/github-script@v7
         with:
