@@ -1,64 +1,78 @@
 name: Build (PR)
-
 on:
   pull_request:
+permissions:
+  contents: write
 
 jobs:
   build-app:
-    permissions:
-      contents: read
-
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-            fetch-depth: 2
+          fetch-depth: 0
 
-      - name: "Check if 'version-bypass' label is present"
-        id: check-label
+      - id: detect
         run: |
-          LABELS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels")
-          echo "LABELS: $LABELS"
-          if echo "$LABELS" | jq -r '.[].name' | grep -q '^version-bypass$'; then
-            echo "bypass=true" >> $GITHUB_ENV
+          TYPE=
+          bypass=false
+          if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+            TYPE=revision
+            bypass=true
+          fi
+          for lbl in $(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH"); do
+            case "$lbl" in
+              major)    TYPE=major;    bypass=true ;;
+              minor)    TYPE=minor;    bypass=true ;;
+              version)  TYPE=revision; bypass=true ;;
+              revision) TYPE=revision; bypass=true ;;
+            esac
+          done
+          echo "TYPE=$TYPE" >> $GITHUB_ENV
+          echo "bypass=$bypass" >> $GITHUB_ENV
+
+      - if: env.TYPE
+        id: calc
+        run: |
+          if [[ "$TYPE" == "revision" ]]; then
+            NPM_BUMP=patch
           else
-            echo "bypass=false" >> $GITHUB_ENV
+            NPM_BUMP=$TYPE
           fi
+          JSON=$(npm version $NPM_BUMP --no-git-tag-version --json)
+          echo "CURRENT=$(echo $JSON | jq -r .oldVersion)" >> $GITHUB_ENV
+          echo "NEW=$(echo $JSON | jq -r .version)" >> $GITHUB_ENV
 
-      - name: "Check release doesn't exist"
-        if: env.bypass != 'true'
+      - if: env.TYPE
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr,
+              body: `Current version: ${process.env.CURRENT}\nProposed bump (${process.env.TYPE}): ${process.env.NEW}`
+            })
+
+      - if: env.bypass != 'true'
         run: |
-          # Check if package.json is among the changed files
           if git diff --name-only HEAD~1 HEAD | grep -q 'package.json'; then
-              # Extract the devDependencies section from both the current and previous version
-              PREV_DEV_DEP=$(git show HEAD~1:package.json | jq -S '.devDependencies')
-              CURR_DEV_DEP=$(jq -S '.devDependencies' package.json)
-
-              # Extract the rest of the package.json sections for comparison
-              PREV_OTHER=$(git show HEAD~1:package.json | jq -S 'del(.devDependencies)')
-              CURR_OTHER=$(jq -S 'del(.devDependencies)' package.json)
-
-              # Check if only the devDependencies section has changed
-              if [ "$PREV_DEV_DEP" = "$CURR_DEV_DEP" ] && [ "$PREV_OTHER" = "$CURR_OTHER" ]; then
-                  echo "Only devDependencies updated. Skipping release check."
-                  exit 0
-              fi
+            PREV_DEV=$(git show HEAD~1:package.json | jq -S '.devDependencies')
+            CURR_DEV=$(jq -S '.devDependencies' package.json)
+            PREV_OTH=$(git show HEAD~1:package.json | jq -S 'del(.devDependencies)')
+            CURR_OTH=$(jq -S 'del(.devDependencies)' package.json)
+            if [ "$PREV_DEV" = "$CURR_DEV" ] && [ "$PREV_OTH" = "$CURR_OTH" ]; then
+              exit 0
+            fi
           fi
-
-          # Extract the version from manifest.json
           VERSION=$(jq -r '.Version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
-
-          # Check if the release already exists
-          RESPONSE=$(curl --silent "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
-          MESSAGE=$(echo $RESPONSE | jq -r '.message')
-
-          if [ "$MESSAGE" != "Not Found" ]; then
-              echo "Release v$VERSION already exists, please update the version in manifest.json"
-              exit 1
+          RESPONSE=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
+          if [ "$(echo "$RESPONSE" | jq -r .message)" != "Not Found" ]; then
+            exit 1
           fi
-
           echo "VERSION=v$VERSION" >> $GITHUB_ENV
 
       - uses: pnpm/action-setup@v4
@@ -66,6 +80,4 @@ jobs:
           version: 8
           run_install: true
 
-      - name: Build App
-        run: |
-          pnpm build
+      - run: pnpm build
