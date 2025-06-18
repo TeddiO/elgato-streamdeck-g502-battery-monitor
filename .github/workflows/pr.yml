@@ -23,10 +23,10 @@ jobs:
           fi
           for lbl in $(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH"); do
             case "$lbl" in
-              major)    TYPE=major ;;
-              minor)    TYPE=minor ;;
-              revision) TYPE=revision ;;
-              version)  TYPE=patch ;;
+            major) TYPE=major ;;
+            minor) TYPE=minor ;;
+            revision) TYPE=revision ;;
+            version) TYPE=patch ;;
             esac
           done
           echo "TYPE=$TYPE" >> $GITHUB_ENV
@@ -37,14 +37,14 @@ jobs:
           CUR=$(jq -r .version package.json)
           IFS='.' read -r MAJ MIN PAT REV <<< "$CUR"
           case "$TYPE" in
-            major)
-              MAJ=$((MAJ+1)); MIN=0; PAT=0; REV=0 ;;
-            minor)
-              MIN=$((MIN+1)); PAT=0; REV=0 ;;
-            patch)
-              PAT=$((PAT+1)); REV=0 ;;
-            revision)
-              REV=$((REV+1)) ;;
+          major)
+            MAJ=$((MAJ+1)); MIN=0; PAT=0; REV=0 ;;
+          minor)
+            MIN=$((MIN+1)); PAT=0; REV=0 ;;
+          patch)
+            PAT=$((PAT+1)); REV=0 ;;
+          revision)
+            REV=$((REV+1)) ;;
           esac
           NEW="$MAJ.$MIN.$PAT.$REV"
           echo "CURRENT=$CUR" >> $GITHUB_ENV
@@ -71,14 +71,18 @@ jobs:
             PREV_OTH=$(git show HEAD~1:package.json | jq -S 'del(.devDependencies)')
             CURR_OTH=$(jq -S 'del(.devDependencies)' package.json)
             if [ "$PREV_DEV" = "$CURR_DEV" ] && [ "$PREV_OTH" = "$CURR_OTH" ]; then
+              echo "Only devDependencies changed; skipping release check."
               exit 0
             fi
           fi
           VERSION=$(jq -r '.Version' com.teddi.g502-battery-monitor.sdPlugin/manifest.json)
+          echo "Checking for existing release tag v$VERSION..."
           RESPONSE=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/tags/v$VERSION")
           if [ "$(echo "$RESPONSE" | jq -r .message)" != "Not Found" ]; then
+            echo "Release v$VERSION already exists; please bump the version in manifest.json."
             exit 1
           fi
+          echo "Release tag v$VERSION not found; proceeding."
           echo "VERSION=v$VERSION" >> $GITHUB_ENV
 
       - uses: pnpm/action-setup@v4
