@@ -7,11 +7,11 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,7 +26,8 @@ jobs:
       - name: Get PR number
         id: get_pr
         run: |
-          PR_NUM=$(curl -s -H "Accept: application/vnd.github.groot-preview+json" \
+          PR_NUM=$(curl -s \
+            -H "Accept: application/vnd.github.groot-preview+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/commits/${{ github.sha }}/pulls" \
             | jq -r '.[0].number // empty')
@@ -37,8 +38,10 @@ jobs:
         run: exit 0
 
       - name: Get PR details
+        id: pr_details
         run: |
-          PR_INFO=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          PR_INFO=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUM}")
           AUTHOR=$(echo "$PR_INFO" | jq -r .user.login)
           LABELS=$(echo "$PR_INFO" | jq -r '.labels[].name')
@@ -48,57 +51,74 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
 
       - name: Determine bump type
+        id: determine_bump
         run: |
           if [[ "$AUTHOR" == "dependabot[bot]" ]]; then
-            BUMP=patch
+            TYPE=revision
           else
+            TYPE=
             for lbl in $LABELS; do
-              case $lbl in
-                major)    BUMP=major ;;
-                minor)    BUMP=minor ;;
-                revision) BUMP=patch ;;
-                version)  BUMP=patch ;;
+              case "$lbl" in
+              major) TYPE=major ;;
+              minor) TYPE=minor ;;
+              patch) TYPE=patch ;;
+              revision) TYPE=revision ;;
               esac
             done
           fi
-          if [ -z "$BUMP" ]; then
-            echo "No version bump label on PR #$PR_NUM" >&2
+          if [ -z "$TYPE" ]; then
+            echo "No version-bump label on PR #$PR_NUM" >&2
             exit 1
           fi
-          echo "BUMP=$BUMP" >> $GITHUB_ENV
+          echo "TYPE=$TYPE" >> $GITHUB_ENV
 
-      - name: Bump version
+      - name: Calculate new semver-4 version
+        id: calc_version
         run: |
-          npm version $BUMP --no-git-tag-version
-          NEW_VER=$(jq -r .version package.json)
-          jq --arg v "$NEW_VER" '.Version=$v' com.teddi.g502-battery-monitor.sdPlugin/manifest.json \
-            > tmp && mv tmp com.teddi.g502-battery-monitor.sdPlugin/manifest.json
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json com.teddi.g502-battery-monitor.sdPlugin/manifest.json
-          git commit -m "chore: bump version to v$NEW_VER [skip ci]"
-          git push
-          echo "VERSION=v$NEW_VER" >> $GITHUB_ENV
+          RESPONSE=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/latest")
+          LATEST_TAG=$(echo "$RESPONSE" | jq -r .tag_name)
+          CURRENT=${LATEST_TAG#v}
+          IFS='.' read -r MAJ MIN PAT REV <<< "$CURRENT"
+          case "$TYPE" in
+          major)    MAJ=$((MAJ+1)); MIN=0; PAT=0; REV=0 ;;
+          minor)    MIN=$((MIN+1)); PAT=0; REV=0 ;;
+          patch)    PAT=$((PAT+1)); REV=0 ;;
+          revision) REV=$((REV+1)) ;;
+          esac
+          NEW="$MAJ.$MIN.$PAT.$REV"
+          echo "CURRENT=$CURRENT" >> $GITHUB_ENV
+          echo "NEW=$NEW"     >> $GITHUB_ENV
+          echo "Calculated new version: $NEW"
+
+      - name: Generate manifest.json from template
+        run: |
+          sed "s/__VERSION__/${{ env.NEW }}/" \
+            com.teddi.g502-battery-monitor.sdPlugin/manifest.json.tpl \
+            > com.teddi.g502-battery-monitor.sdPlugin/manifest.json
 
       - uses: pnpm/action-setup@v4
         with:
           version: 8
           run_install: true
 
-      - name: Build
+      - name: Build App
         run: pnpm build
 
       - name: Zip artifact
-        run: zip -r com.teddi.g502-battery-monitor.sdPlugin.zip com.teddi.g502-battery-monitor.sdPlugin
+        run: |
+          zip -r com.teddi.g502-battery-monitor.sdPlugin.zip \
+            com.teddi.g502-battery-monitor.sdPlugin
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           files: com.teddi.g502-battery-monitor.sdPlugin.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: ${{ env.VERSION }}
-          tag_name: ${{ env.VERSION }}
-          body: "Release ${{ env.VERSION }}"
+          name: v${{ env.NEW }}
+          tag_name: v${{ env.NEW }}
+          body: "Release v${{ env.NEW }}"
           draft: false
           prerelease: false
           make_latest: true
