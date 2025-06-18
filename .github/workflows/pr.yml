@@ -1,6 +1,8 @@
 name: Build (PR)
+
 on:
   pull_request:
+
 permissions:
   contents: write
 
@@ -16,36 +18,40 @@ jobs:
       - id: detect
         run: |
           TYPE=
-          bypass=false
           if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
             TYPE=revision
-            bypass=true
           fi
           for lbl in $(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH"); do
             case "$lbl" in
-              major)    TYPE=major;    bypass=true ;;
-              minor)    TYPE=minor;    bypass=true ;;
-              version)  TYPE=revision; bypass=true ;;
-              revision) TYPE=revision; bypass=true ;;
+              major)    TYPE=major ;;
+              minor)    TYPE=minor ;;
+              revision) TYPE=revision ;;
+              version)  TYPE=patch ;;
             esac
           done
           echo "TYPE=$TYPE" >> $GITHUB_ENV
-          echo "bypass=$bypass" >> $GITHUB_ENV
 
       - if: env.TYPE
         id: calc
         run: |
-          if [[ "$TYPE" == "revision" ]]; then
-            NPM_BUMP=patch
-          else
-            NPM_BUMP=$TYPE
-          fi
-          JSON=$(npm version $NPM_BUMP --no-git-tag-version --json)
-          echo "CURRENT=$(echo $JSON | jq -r .oldVersion)" >> $GITHUB_ENV
-          echo "NEW=$(echo $JSON | jq -r .version)" >> $GITHUB_ENV
+          CUR=$(jq -r .version package.json)
+          IFS='.' read -r MAJ MIN PAT REV <<< "$CUR"
+          case "$TYPE" in
+            major)
+              MAJ=$((MAJ+1)); MIN=0; PAT=0; REV=0 ;;
+            minor)
+              MIN=$((MIN+1)); PAT=0; REV=0 ;;
+            patch)
+              PAT=$((PAT+1)); REV=0 ;;
+            revision)
+              REV=$((REV+1)) ;;
+          esac
+          NEW="$MAJ.$MIN.$PAT.$REV"
+          echo "CURRENT=$CUR" >> $GITHUB_ENV
+          echo "NEW=$NEW" >> $GITHUB_ENV
 
       - if: env.TYPE
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -55,9 +61,9 @@ jobs:
               repo: context.repo.repo,
               issue_number: pr,
               body: `Current version: ${process.env.CURRENT}\nProposed bump (${process.env.TYPE}): ${process.env.NEW}`
-            })
+            });
 
-      - if: env.bypass != 'true'
+      - name: Check release doesn't exist
         run: |
           if git diff --name-only HEAD~1 HEAD | grep -q 'package.json'; then
             PREV_DEV=$(git show HEAD~1:package.json | jq -S '.devDependencies')
