@@ -2,6 +2,10 @@ name: Build (PR)
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - labeled
 
 permissions:
   contents: write
@@ -9,6 +13,7 @@ permissions:
 
 jobs:
   build-app:
+    if: github.event.action != 'labeled' || contains(fromJSON('["major", "minor", "patch", "revision"]'), github.event.label.name)
     runs-on: ubuntu-latest
 
     steps:
@@ -53,7 +58,7 @@ jobs:
           echo "Proposed new version: $NEW"
           echo "CURRENT=$CURRENT" >> $GITHUB_ENV
           echo "NEW=$NEW" >> $GITHUB_ENV
-  
+
       - if: env.TYPE
         uses: actions/github-script@v7
         with:
