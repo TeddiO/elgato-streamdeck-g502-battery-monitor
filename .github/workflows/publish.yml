@@ -1,10 +1,9 @@
 name: Build & Publish
 
 on:
-    pull_request:
-#   push:
-#     branches:
-#       - main
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -41,10 +40,6 @@ jobs:
       - name: Get PR details
         id: pr_details
         run: |
-          PR_NUM=70
-          echo "Using fake PR number: $PR_NUM"
-
-
           PR_INFO=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUM}")
@@ -118,15 +113,15 @@ jobs:
           zip -r com.teddi.g502-battery-monitor.sdPlugin.zip \
             com.teddi.g502-battery-monitor.sdPlugin
 
-    #   - name: Publish release
-    #     uses: softprops/action-gh-release@v2
-    #     with:
-    #       files: com.teddi.g502-battery-monitor.sdPlugin.zip
-    #       token: ${{ secrets.GITHUB_TOKEN }}
-    #       name: v${{ env.NEW }}
-    #       tag_name: v${{ env.NEW }}
-    #       body: "Release v${{ env.NEW }}"
-    #       draft: false
-    #       prerelease: false
-    #       make_latest: true
-    #       generate_release_notes: true
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: com.teddi.g502-battery-monitor.sdPlugin.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: v${{ env.NEW }}
+          tag_name: v${{ env.NEW }}
+          body: "Release v${{ env.NEW }}"
+          draft: false
+          prerelease: false
+          make_latest: true
+          generate_release_notes: true
