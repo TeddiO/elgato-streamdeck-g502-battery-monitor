@@ -1,9 +1,10 @@
 name: Build & Publish
 
 on:
-  push:
-    branches:
-      - main
+    pull_request:
+#   push:
+#     branches:
+#       - main
 
 permissions:
   contents: write
@@ -100,7 +101,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 10
           run_install: true
 
       - name: Build App
@@ -111,15 +112,15 @@ jobs:
           zip -r com.teddi.g502-battery-monitor.sdPlugin.zip \
             com.teddi.g502-battery-monitor.sdPlugin
 
-      - name: Publish release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: com.teddi.g502-battery-monitor.sdPlugin.zip
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: v${{ env.NEW }}
-          tag_name: v${{ env.NEW }}
-          body: "Release v${{ env.NEW }}"
-          draft: false
-          prerelease: false
-          make_latest: true
-          generate_release_notes: true
+    #   - name: Publish release
+    #     uses: softprops/action-gh-release@v2
+    #     with:
+    #       files: com.teddi.g502-battery-monitor.sdPlugin.zip
+    #       token: ${{ secrets.GITHUB_TOKEN }}
+    #       name: v${{ env.NEW }}
+    #       tag_name: v${{ env.NEW }}
+    #       body: "Release v${{ env.NEW }}"
+    #       draft: false
+    #       prerelease: false
+    #       make_latest: true
+    #       generate_release_notes: true
