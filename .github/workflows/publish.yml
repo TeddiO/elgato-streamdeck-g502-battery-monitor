@@ -58,24 +58,26 @@ jobs:
       - name: Determine bump type
         id: determine_bump
         run: |
-          if [[ "$AUTHOR" == "dependabot[bot]" ]]; then
-            TYPE=revision
-          else
             TYPE=
             for lbl in $LABELS; do
-              case "$lbl" in
-              major) TYPE=major ;;
-              minor) TYPE=minor ;;
-              patch) TYPE=patch ;;
-              revision) TYPE=revision ;;
-              esac
+            case "$lbl" in
+                major) TYPE=major; break ;;
+                minor) [ "$TYPE" != "major" ] && TYPE=minor ;;
+                patch) [ "$TYPE" != "major" ] && [ "$TYPE" != "minor" ] && TYPE=patch ;;
+                revision) [ -z "$TYPE" ] && TYPE=revision ;;
+            esac
             done
-          fi
-          if [ -z "$TYPE" ]; then
+
+            if [ -z "$TYPE" ] && [ "$AUTHOR" == "dependabot[bot]" ]; then
+            TYPE=revision
+            fi
+
+            if [ -z "$TYPE" ]; then
             echo "No version-bump label on PR #$PR_NUM" >&2
             exit 1
-          fi
-          echo "TYPE=$TYPE" >> $GITHUB_ENV
+            fi
+
+            echo "TYPE=$TYPE" >> $GITHUB_ENV
 
       - name: Calculate new semver-4 version
         id: calc_version
