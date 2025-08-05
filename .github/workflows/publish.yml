@@ -64,12 +64,12 @@ jobs:
             done
 
             if [ -z "$TYPE" ] && [ "$AUTHOR" == "dependabot[bot]" ]; then
-            TYPE=revision
+              TYPE=revision
             fi
 
             if [ -z "$TYPE" ]; then
-            echo "No version-bump label on PR #$PR_NUM" >&2
-            exit 1
+              echo "No version-bump label on PR #$PR_NUM" >&2
+              exit 1
             fi
 
             echo "TYPE=$TYPE" >> $GITHUB_ENV
