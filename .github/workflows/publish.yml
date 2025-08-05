@@ -41,6 +41,10 @@ jobs:
       - name: Get PR details
         id: pr_details
         run: |
+          PR_NUM=70
+          echo "Using fake PR number: $PR_NUM"
+
+
           PR_INFO=$(curl -s \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUM}")
