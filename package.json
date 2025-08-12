@@ -20,5 +20,8 @@
 	"dependencies": {
 		"@elgato/streamdeck": "^1.4.0",
 		"ws": "^8.18.3"
+	},
+	"resolutions": {
+		"tmp": ">=0.2.4"
 	}
 }
