@@ -1,18 +1,11 @@
 import { action, SingletonAction, WillAppearEvent, WillDisappearEvent } from "@elgato/streamdeck";
-import streamDeck, { LogLevel } from "@elgato/streamdeck";
+import streamDeck from "@elgato/streamdeck";
 import WebSocket from 'ws';
 
-const logLevels: { [key: string]: LogLevel } = {
-	'debug': LogLevel.DEBUG,
-	'info': LogLevel.INFO,
-	'warn': LogLevel.WARN,
-	'error': LogLevel.ERROR,
-	'trace': LogLevel.TRACE
-};
 
 const logger = streamDeck.logger.createScope("Websocket Log");
-const logLevel = process.env.BATTERY_MONITOR_LOGLEVEL ? logLevels[process.env.BATTERY_MONITOR_LOGLEVEL.toLowerCase()] : LogLevel.ERROR;
-logger.setLevel(logLevel);
+const logLevel = process.env.BATTERY_MONITOR_LOGLEVEL ? process.env.BATTERY_MONITOR_LOGLEVEL.toLowerCase() : "error";
+streamDeck.logger.setLevel(logLevel as "error" | "warn" | "info" | "debug" | "trace")
 
 
 let regex = /g502/;
