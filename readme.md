@@ -5,8 +5,8 @@ A plugin for the Stream Deck that allows for monitoring the battery level of a L
 Upon boot or back to the page with the indicator on, it'll query the battery level and update the charge accordingly. It'll also give you an indicator for when it's charging and / or fully charged.
 
 - Requires the Logitech G-Hub to be installed.
-- Based on the beta NodeJS SDK for the Stream Deck (https://github.com/elgatosf/streamdeck)
-- Requires Stream Deck 6.4 or newer.
+- Based on the NodeJS SDK for the Stream Deck (https://github.com/elgatosf/streamdeck)
+- Requires Stream Deck 7.0 or newer.
 
 ## Installation
 
