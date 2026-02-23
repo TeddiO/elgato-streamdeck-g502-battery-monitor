@@ -113,7 +113,17 @@ jobs:
           zip -r com.teddi.g502-battery-monitor.sdPlugin.zip \
             com.teddi.g502-battery-monitor.sdPlugin
 
+      - name: Check for no-publish label
+        run: |
+          if echo "$LABELS" | grep -q "^no-publish$"; then
+            echo "SKIP_PUBLISH=true" >> $GITHUB_ENV
+            echo "no-publish label detected - release will be skipped."
+          else
+            echo "SKIP_PUBLISH=false" >> $GITHUB_ENV
+          fi
+
       - name: Publish release
+        if: env.SKIP_PUBLISH != 'true'
         uses: softprops/action-gh-release@v2
         with:
           files: com.teddi.g502-battery-monitor.sdPlugin.zip
