@@ -13,13 +13,13 @@
 		"@tsconfig/node20": "^20.1.9",
 		"@types/node": "25.5.0",
 		"@types/ws": "^8.18.1",
-		"rollup": "^4.59.0",
+		"rollup": "^4.60.0",
 		"tslib": "^2.8.1",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.2"
 	},
 	"dependencies": {
-		"@elgato/streamdeck": "^2.0.2",
-		"ws": "^8.19.0"
+		"@elgato/streamdeck": "^2.0.4",
+		"ws": "^8.20.0"
 	},
 	"resolutions": {
 		"tmp": ">=0.2.4",
