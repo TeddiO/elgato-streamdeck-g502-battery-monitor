@@ -11,6 +11,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-app:
     if: github.event.action != 'labeled' || contains(fromJSON('["major", "minor", "patch", "revision"]'), github.event.label.name)
