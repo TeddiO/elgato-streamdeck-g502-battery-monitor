@@ -11,10 +11,17 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: pr-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-app:
-    if: github.event.action != 'labeled' || contains(fromJSON('["major", "minor", "patch", "revision"]'), github.event.label.name)
+    if: github.event.action != 'labeled' || contains(fromJSON('["major", "minor", "patch", "revision", "allow-fresh-packages"]'), github.event.label.name)
     runs-on: ubuntu-latest
+
+    env:
+      PNPM_CONFIG_MINIMUM_RELEASE_AGE: ${{ contains(github.event.pull_request.labels.*.name, 'allow-fresh-packages') && '0' || '1440' }}
 
     steps:
       - uses: actions/checkout@v7
@@ -35,7 +42,7 @@ jobs:
             revision) TYPE=revision ;;
             esac
           done
-          echo "TYPE=$TYPE" >> $GITHUB_ENV
+          echo "TYPE=$TYPE" >> "$GITHUB_ENV"
           echo "Determined bump type: $TYPE"
 
       - if: env.TYPE
@@ -56,8 +63,8 @@ jobs:
           echo "Fetched latest release: $LATEST_TAG"
           echo "Current version: $CURRENT"
           echo "Proposed new version: $NEW"
-          echo "CURRENT=$CURRENT" >> $GITHUB_ENV
-          echo "NEW=$NEW" >> $GITHUB_ENV
+          echo "CURRENT=$CURRENT" >> "$GITHUB_ENV"
+          echo "NEW=$NEW" >> "$GITHUB_ENV"
 
       - if: env.TYPE
         uses: actions/github-script@v9
@@ -82,9 +89,12 @@ jobs:
           echo "Generated manifest.json:"
           cat com.teddi.g502-battery-monitor.sdPlugin/manifest.json
 
+      - name: Show pnpm release-age policy
+        run: echo "pnpm minimum release age is ${PNPM_CONFIG_MINIMUM_RELEASE_AGE} minutes"
+
       - uses: pnpm/action-setup@v6
         with:
-          version: 11.10.0
           run_install: true
+          version: ^11.10.0
 
       - run: pnpm build
