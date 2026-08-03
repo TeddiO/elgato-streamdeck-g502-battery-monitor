@@ -92,7 +92,7 @@ jobs:
       - name: Show pnpm release-age policy
         run: echo "pnpm minimum release age is ${PNPM_CONFIG_MINIMUM_RELEASE_AGE} minutes"
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.0.9
         with:
           run_install: true
           version: ^11.10.0
