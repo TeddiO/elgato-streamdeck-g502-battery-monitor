@@ -5,7 +5,7 @@
 	},
 	"type": "module",
 	"devDependencies": {
-		"@elgato/cli": "^1.7.4",
+		"@elgato/cli": "^1.8.1",
 		"@rollup/plugin-commonjs": "^29.0.3",
 		"@rollup/plugin-node-resolve": "^16.0.3",
 		"@rollup/plugin-terser": "^1.0.0",
@@ -18,7 +18,7 @@
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
-		"@elgato/streamdeck": "^2.1.0",
+		"@elgato/streamdeck": "^2.1.1",
 		"fast-uri": "^3.1.5",
 		"ws": "^8.21.3"
 	}

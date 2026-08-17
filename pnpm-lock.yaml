@@ -20,8 +20,8 @@ importers:
   .:
     dependencies:
       '@elgato/streamdeck':
-        specifier: ^2.1.0
-        version: 2.1.0
+        specifier: ^2.1.1
+        version: 2.1.1
       fast-uri:
         specifier: ^3.1.5
         version: 3.1.5
@@ -30,8 +30,8 @@ importers:
         version: 8.21.3
     devDependencies:
       '@elgato/cli':
-        specifier: ^1.7.4
-        version: 1.7.4(@types/node@26.2.0)
+        specifier: ^1.8.1
+        version: 1.8.1(@types/node@26.2.0)
       '@rollup/plugin-commonjs':
         specifier: ^29.0.3
         version: 29.0.3(rollup@4.62.4)
@@ -65,20 +65,20 @@ importers:
 
 packages:
 
-  '@elgato/cli@1.7.4':
-    resolution: {integrity: sha512-6gD0f9p6VKNYv/INZGk4RzjBbiGSCUCiDOXxh52KyjVbnsJXNlFSKFBk8mtZIoJQHRl+5/QkZkKxXUmABxf86Q==}
+  '@elgato/cli@1.8.1':
+    resolution: {integrity: sha512-c4nhUrssspNdCA53DVspJcYFbxUPgYeqzJKVlGJvjMAPUk7BSs6yUzLF5IsQwDxlO8XWydp54wNPQftuNX1++A==}
     engines: {node: '>=20.1.0'}
     hasBin: true
 
   '@elgato/schemas@0.4.15':
     resolution: {integrity: sha512-UpELAqazf52PFer+hqg/hvEhYoPHCH3R0af6P7Ih3Hk6xCCJENn7cA5TIpXAIGEWe6dIteHuo/e/iPGLUP7yXA==}
 
-  '@elgato/streamdeck@2.1.0':
-    resolution: {integrity: sha512-d6wgSe93NbKAW0yT6/rabGCYUWic6nAoQoSLAXVadqTIUVmt+5Tfu7OaIGKnGER6AOn6dOpX6havRLFFFcUmOw==}
+  '@elgato/streamdeck@2.1.1':
+    resolution: {integrity: sha512-1viBEWDZWtRJHmY6uceyNZSExb6b0nRBqHlQfPyPulBUQ8tDdzfS7YDZ9MusHYHq1d80GjgwFiJCyHbujrJrHQ==}
     engines: {node: '>=20.5.1'}
 
-  '@elgato/utils@0.4.5':
-    resolution: {integrity: sha512-kBoqM8LEhhVLv7lNftYqaecNna3T/L85QQWU56yR1iFCvqlyyD22WmBljRcQkw5ZNvib55Br3cnrsxX3ajp+dQ==}
+  '@elgato/utils@0.5.0':
+    resolution: {integrity: sha512-qFIl5uT6LzQsesngwJZAQ+sFUzg5SRPbSwdWwrYe/HBRlWRwJoqZDUVYgbxdofpQQeCYgO22iAzzqw+MuSLzNA==}
 
   '@humanwhocodes/momoa@3.3.10':
     resolution: {integrity: sha512-KWiFQpSAqEIyrTXko3hFNLeQvSK8zXlJQzhhxsyVn58WFRYXST99b3Nqnu+ttOtjds2Pl2grUHGpe2NzhPynuQ==}
@@ -217,10 +217,6 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
-
-  '@isaacs/fs-minipass@4.0.1':
-    resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
-    engines: {node: '>=18.0.0'}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -447,8 +443,8 @@ packages:
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
-  '@zip.js/zip.js@2.8.26':
-    resolution: {integrity: sha512-RQ4h9F6DOiHxpdocUDrOl6xBM+yOtz+LkUol47AVWcfebGBDpZ7w7Xvz9PS24JgXvLGiXXzSAfdCdVy1tPlaFA==}
+  '@zip.js/zip.js@2.8.49':
+    resolution: {integrity: sha512-TY3fKR/IQqPJqrOQAohvW6kv7Qd1aehzU7M7hbqhNNKxVP8uKSMO+aUlBwtdWzTCd62E0YOB+HHW9N0hMihrWw==}
     engines: {bun: '>=0.7.0', deno: '>=1.0.0', node: '>=18.0.0'}
 
   acorn@8.17.0:
@@ -474,9 +470,9 @@ packages:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
     engines: {node: 18 || 20 || >=22}
 
-  brace-expansion@5.0.7:
-    resolution: {integrity: sha512-7oFy703dxfY3/NLxC1fh2SUCQ0H9rmAY+5EpDVfXjUTTs+HEwR2nYaqLv+GWcTsumwxPfiz6CzCNkwXwBUwqCA==}
-    engines: {node: 18 || 20 || >=22}
+  brace-expansion@5.0.9:
+    resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
+    engines: {node: 20 || >=22}
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
@@ -491,10 +487,6 @@ packages:
 
   chardet@2.2.0:
     resolution: {integrity: sha512-rddelWYNPRrXq6PtNEN2S3f6t9ILzvqaN5pVgi4kqt9jHQaXIial9PznB5iSPVlQSLNaaH22ItWz3EJtQ10+OA==}
-
-  chownr@3.0.0:
-    resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
-    engines: {node: '>=18'}
 
   cli-width@4.1.0:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
@@ -639,17 +631,9 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  minimatch@10.2.5:
-    resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
+  minimatch@10.2.6:
+    resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
-
-  minipass@7.1.3:
-    resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
-    engines: {node: '>=16 || 14 >=14.17'}
-
-  minizlib@3.1.0:
-    resolution: {integrity: sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==}
-    engines: {node: '>= 18'}
 
   mute-stream@2.0.0:
     resolution: {integrity: sha512-WWdIxpyjEn+FhQJQQv9aQAYlHoNVdzIzUySNV1gHUPDSdZJ3yZn7pAAbQcV7B56Mvu881q9FZV+0Vx2xC44VWA==}
@@ -732,10 +716,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  tar@7.5.20:
-    resolution: {integrity: sha512-9FcyK4PA6+WbzlTM9WhQm6vB5W7cP7dUiPsv1g7YDwEQnQ1CGpK3MGlKk/ITVWMk05kHZuBhmVhiv8LZoy/PFQ==}
-    engines: {node: '>=18'}
-
   terser@5.49.0:
     resolution: {integrity: sha512-SNiDnXyHSrxVcIOtVbULzcTmniUiwcV7Nwdyj1twVubeTmbjoa8p69KKDpfkdoOavuM4/GRm1+ykI8qqnavHoA==}
     engines: {node: '>=10'}
@@ -768,16 +748,12 @@ packages:
       utf-8-validate:
         optional: true
 
-  yallist@5.0.0:
-    resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
-    engines: {node: '>=18'}
-
   yoctocolors-cjs@2.1.3:
     resolution: {integrity: sha512-U/PBtDf35ff0D8X8D0jfdzHYEPFxAI7jJlxZXwCSez5M3190m+QobIfh+sWDWSHMCWWJN2AWamkegn6vr6YBTw==}
     engines: {node: '>=18'}
 
-  yoctocolors@2.1.2:
-    resolution: {integrity: sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==}
+  yoctocolors@2.2.0:
+    resolution: {integrity: sha512-xYqdZFUK/VYazNl/oCDYN+3WloWQwMfZxBoiNt6qNyk+xfOdi598muWE42rNZFp1kNOiqW936q5RhUdnpqElSg==}
     engines: {node: '>=18'}
 
   zod@3.25.76:
@@ -785,11 +761,11 @@ packages:
 
 snapshots:
 
-  '@elgato/cli@1.7.4(@types/node@26.2.0)':
+  '@elgato/cli@1.8.1(@types/node@26.2.0)':
     dependencies:
       '@elgato/schemas': 0.4.15
       '@humanwhocodes/momoa': 3.3.10
-      '@zip.js/zip.js': 2.8.26
+      '@zip.js/zip.js': 2.8.49
       ajv: 8.20.0
       chalk: 5.6.2
       commander: 13.1.0
@@ -802,22 +778,21 @@ snapshots:
       log-symbols: 7.0.1
       rage-edit: 1.2.0
       semver: 7.8.5
-      tar: 7.5.20
     transitivePeerDependencies:
       - '@types/node'
 
   '@elgato/schemas@0.4.15': {}
 
-  '@elgato/streamdeck@2.1.0':
+  '@elgato/streamdeck@2.1.1':
     dependencies:
       '@elgato/schemas': 0.4.15
-      '@elgato/utils': 0.4.5
+      '@elgato/utils': 0.5.0
       ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@elgato/utils@0.4.5':
+  '@elgato/utils@0.5.0':
     dependencies:
       zod: 3.25.76
 
@@ -947,10 +922,6 @@ snapshots:
   '@inquirer/type@3.0.10(@types/node@26.2.0)':
     optionalDependencies:
       '@types/node': 26.2.0
-
-  '@isaacs/fs-minipass@4.0.1':
-    dependencies:
-      minipass: 7.1.3
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -1110,7 +1081,7 @@ snapshots:
     dependencies:
       '@types/node': 26.2.0
 
-  '@zip.js/zip.js@2.8.26': {}
+  '@zip.js/zip.js@2.8.49': {}
 
   acorn@8.17.0: {}
 
@@ -1131,7 +1102,7 @@ snapshots:
 
   balanced-match@4.0.4: {}
 
-  brace-expansion@5.0.7:
+  brace-expansion@5.0.9:
     dependencies:
       balanced-match: 4.0.4
 
@@ -1145,8 +1116,6 @@ snapshots:
   chalk@5.6.2: {}
 
   chardet@2.2.0: {}
-
-  chownr@3.0.0: {}
 
   cli-width@4.1.0: {}
 
@@ -1186,7 +1155,7 @@ snapshots:
 
   filelist@1.0.6:
     dependencies:
-      minimatch: 10.2.5
+      minimatch: 10.2.6
 
   find-process@1.4.11:
     dependencies:
@@ -1252,7 +1221,7 @@ snapshots:
   log-symbols@7.0.1:
     dependencies:
       is-unicode-supported: 2.1.0
-      yoctocolors: 2.1.2
+      yoctocolors: 2.2.0
 
   loglevel@1.9.2: {}
 
@@ -1260,15 +1229,9 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  minimatch@10.2.5:
+  minimatch@10.2.6:
     dependencies:
-      brace-expansion: 5.0.7
-
-  minipass@7.1.3: {}
-
-  minizlib@3.1.0:
-    dependencies:
-      minipass: 7.1.3
+      brace-expansion: 5.0.9
 
   mute-stream@2.0.0: {}
 
@@ -1360,14 +1323,6 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  tar@7.5.20:
-    dependencies:
-      '@isaacs/fs-minipass': 4.0.1
-      chownr: 3.0.0
-      minipass: 7.1.3
-      minizlib: 3.1.0
-      yallist: 5.0.0
-
   terser@5.49.0:
     dependencies:
       '@jridgewell/source-map': 0.3.11
@@ -1389,10 +1344,8 @@ snapshots:
 
   ws@8.21.3: {}
 
-  yallist@5.0.0: {}
-
   yoctocolors-cjs@2.1.3: {}
 
-  yoctocolors@2.1.2: {}
+  yoctocolors@2.2.0: {}
 
   zod@3.25.76: {}
