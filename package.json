@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"@elgato/streamdeck": "^2.1.2",
-		"fast-uri": "^3.1.5",
+		"fast-uri": "^4.1.2",
 		"ws": "^8.21.3"
 	}
 }
