@@ -113,7 +113,7 @@ jobs:
             com.teddi.g502-battery-monitor.sdPlugin/manifest.json.tpl \
             > com.teddi.g502-battery-monitor.sdPlugin/manifest.json
 
-      - uses: pnpm/action-setup@v6.0.10
+      - uses: pnpm/action-setup@v6.1.0
         with:
           version: ^11.10.0
           run_install: true
