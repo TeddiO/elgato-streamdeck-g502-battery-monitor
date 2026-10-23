@@ -18,7 +18,7 @@
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
-		"@elgato/streamdeck": "^2.1.2",
+		"@elgato/streamdeck": "^3.0.3",
 		"fast-uri": "^4.2.2",
 		"ws": "^8.22.0"
 	}
