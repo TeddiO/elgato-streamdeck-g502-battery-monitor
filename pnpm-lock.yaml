@@ -20,8 +20,8 @@ importers:
   .:
     dependencies:
       '@elgato/streamdeck':
-        specifier: ^2.1.2
-        version: 2.1.2
+        specifier: ^3.0.3
+        version: 3.0.3
       fast-uri:
         specifier: ^3.1.8
         version: 3.1.8
@@ -70,18 +70,18 @@ packages:
     engines: {node: '>=20.1.0'}
     hasBin: true
 
-  '@elgato/schemas@0.4.16':
-    resolution: {integrity: sha512-PFEi6F36ImO5KCSNHui9o/uXkwjca3hk5b95Df7LgNBdQYREXT3B+P3tYoz6avRuOPlArkKFSkOOvH6RRpjvLQ==}
-
   '@elgato/schemas@0.5.2':
     resolution: {integrity: sha512-o3WKn69nKh4orOJZdB5Ei3OXktscFOzSO2s4mIlEEkO+wvs/b38IjSzV/dOFKjux2crTWobAmw7W1d5Vm+VucQ==}
 
-  '@elgato/streamdeck@2.1.2':
-    resolution: {integrity: sha512-qj6NuDyYj8bE+XFnr+O5ynB1zojwugfWiK3oQYwweaOzOFs7fEE21v9z75EPC8wQr3cuuzI7m557TQLn5k/4mA==}
+  '@elgato/schemas@0.5.3':
+    resolution: {integrity: sha512-S/r+ToNqz6qPy8Kzizt+hQDjICFMgLYXy/b8h7OZ4FpSHTZtWPjh6zAn9iidwPoXR3qs55zM4Oh9JRhIfKVopw==}
+
+  '@elgato/streamdeck@3.0.3':
+    resolution: {integrity: sha512-FJzduzjrZDpmMdUA2tDg+6FkUEQcV5FyqTT175PjN+38V9fUXXL/X/dThGzzz72rRzpb2jdo0G1Dc4ZFsp+sjw==}
     engines: {node: '>=20.5.1'}
 
-  '@elgato/utils@0.6.0':
-    resolution: {integrity: sha512-DkBf07zo0qzHkoMO2L8HSDlfEwI56rI0fWedJjXcafPpoePoZ/nzqi+xL60Ad2KpQzCxstyN65oqVZ/Ar6woNg==}
+  '@elgato/utils@0.6.1':
+    resolution: {integrity: sha512-R3YZWdBlg1ffLny8EmAaZuh7qe+FahGHHwVzCUixnhZObuq4UPhv25ev+PxzgeJRwtpP6P/TVqOw7FFIYThllg==}
 
   '@humanwhocodes/momoa@3.3.12':
     resolution: {integrity: sha512-xS9xl4ieqTqhSZfKV3YXj/htwJCUxbgvkTVaK1fkESgrOzvoVSOTRQeQ8tTLOZUS0Csi2xqtJQXgVTRH5OEbHQ==}
@@ -784,20 +784,20 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@elgato/schemas@0.4.16': {}
-
   '@elgato/schemas@0.5.2': {}
 
-  '@elgato/streamdeck@2.1.2':
+  '@elgato/schemas@0.5.3': {}
+
+  '@elgato/streamdeck@3.0.3':
     dependencies:
-      '@elgato/schemas': 0.4.16
-      '@elgato/utils': 0.6.0
+      '@elgato/schemas': 0.5.3
+      '@elgato/utils': 0.6.1
       ws: 8.22.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@elgato/utils@0.6.0':
+  '@elgato/utils@0.6.1':
     dependencies:
       zod: 3.25.76
 
