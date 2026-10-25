@@ -5,21 +5,23 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-  pull-requests: read
+permissions: {}
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Create release tags and upload release assets.
+      pull-requests: read
 
     env:
       PNPM_CONFIG_MINIMUM_RELEASE_AGE: 1440
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Prevent recursion
         run: |
@@ -113,7 +115,7 @@ jobs:
             com.teddi.g502-battery-monitor.sdPlugin/manifest.json.tpl \
             > com.teddi.g502-battery-monitor.sdPlugin/manifest.json
 
-      - uses: pnpm/action-setup@v6.1.0
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: ^11.10.0
           run_install: true
@@ -137,7 +139,7 @@ jobs:
 
       - name: Publish release
         if: env.SKIP_PUBLISH != 'true'
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           files: com.teddi.g502-battery-monitor.sdPlugin.zip
           token: ${{ secrets.GITHUB_TOKEN }}
