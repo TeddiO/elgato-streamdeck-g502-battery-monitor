@@ -1,4 +1,4 @@
-import { action, SingletonAction, WillAppearEvent, WillDisappearEvent } from "@elgato/streamdeck";
+import { action, KeyAction, SingletonAction, WillAppearEvent, WillDisappearEvent } from "@elgato/streamdeck";
 import streamDeck from "@elgato/streamdeck";
 import WebSocket from 'ws';
 
@@ -22,7 +22,7 @@ logger.setLevel(logLevel);
 let regex = /g502/;
 let deviceID: string = "";
 let ws: WebSocket;
-let screenEvent: WillAppearEvent<any>;
+let screenAction: KeyAction<WillAppearEvent["payload"]["settings"]>;
 let curBattery: number = 0;
 let initialized: boolean = false;
 
@@ -126,7 +126,7 @@ function OnWebsocketMessage(data: WebSocket.Data) {
 		logger.debug(`Battery: ${dataMap.payload.percentage}%`);
 		curBattery = dataMap.payload.percentage;
 		SubscribeToBatteryLevel();
-		screenEvent.action.setTitle(HandleChargeString(dataMap));
+		screenAction.setTitle(HandleChargeString(dataMap));
 		return;
 	}
 
@@ -134,10 +134,10 @@ function OnWebsocketMessage(data: WebSocket.Data) {
 		logger.debug(`Received /battery/state/changed`);
 		if (dataMap.payload.deviceId === deviceID) {
 			curBattery = dataMap.payload.percentage;
-			screenEvent.action.setTitle(HandleChargeString(dataMap));
+			screenAction.setTitle(HandleChargeString(dataMap));
 
 			if (curBattery <= 20) {
-				screenEvent.action.showAlert()
+				screenAction.showAlert()
 			}
 		}
 	}
@@ -167,18 +167,26 @@ function CreateWebsocket() {
 
 @action({ UUID: "com.teddi.g502-battery-monitor.monitor" })
 export class PowerMonitor extends SingletonAction {
-	onWillAppear(ev: WillAppearEvent<any>): void | Promise<void> {
+	onWillAppear(ev: WillAppearEvent): void | Promise<void> {
+		if (!ev.action.isKey()) {
+			logger.error("Battery monitor only supports keypad actions");
+			return;
+		}
+
 		logger.debug("WebSocket initializing...");
 		ws = CreateWebsocket()
-		screenEvent = ev;
+		screenAction = ev.action;
 		
 		return ev.action.setTitle("🕒...%");
 	}
 
-	onWillDisappear(screenEvent: WillDisappearEvent<any>): void | Promise<void> {
+	onWillDisappear(ev: WillDisappearEvent): void | Promise<void> {
+		if (ev.action.controllerType !== "Keypad") {
+			logger.error("Battery monitor only supports keypad actions");
+			return;
+		}
 		logger.debug("Changing page: Closing WebSocket connection");
 		ws.close();
 		logger.debug("Changing page: WebSocket connection closed");
 	}
 }
-
