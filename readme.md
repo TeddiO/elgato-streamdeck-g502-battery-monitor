@@ -6,7 +6,7 @@ Upon boot or back to the page with the indicator on, it'll query the battery lev
 
 - Requires the Logitech G-Hub to be installed.
 - Based on the NodeJS SDK for the Stream Deck (https://github.com/elgatosf/streamdeck)
-- Requires Stream Deck 7.0 or newer.
+- Requires Stream Deck 7.1 or newer.
 
 ## Installation
 
