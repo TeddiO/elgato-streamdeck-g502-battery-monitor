@@ -5,7 +5,13 @@
 			"node"
 		],
 		"module": "ES2022",
-		"moduleResolution": "Bundler"
+		"moduleResolution": "Bundler",
+		"rootDir": "src",
+		"outDir": ".build",
+		"noEmitOnError": true,
+		"importHelpers": true,
+		"sourceMap": true,
+		"inlineSources": true
 	},
 	"include": [
 		"src/**/*.ts"

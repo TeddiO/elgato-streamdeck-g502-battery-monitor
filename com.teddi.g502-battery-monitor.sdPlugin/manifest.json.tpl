@@ -28,7 +28,7 @@
 	"Icon": "imgs/plugin/marketplace",
 	"SDKVersion": 2,
 	"Software": {
-		"MinimumVersion": "6.5"
+		"MinimumVersion": "7.1"
 	},
 	"OS": [
 		{
